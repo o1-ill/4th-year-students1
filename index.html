@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقسيم طلاب المرحلة الرابعة</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .table-container img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+        }
+        .form-section {
+            margin-top: 30px;
+            padding: 20px;
+            border-top: 2px solid #ddd;
+        }
+        .form-section h2 {
+            text-align: center;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn-submit:hover {
+            background-color: #218838;
+        }
+        .data-section {
+            margin-top: 30px;
+        }
+        .data-section h2 {
+            text-align: center;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .group-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .group-table th, .group-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .group-table th {
+            background-color: #f2f2f2;
+        }
+        .group-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        #password-field {
+            display: none;
+        }
+        #admin-actions {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .admin-btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+        }
+        #export-btn { background-color: #007bff; }
+        #import-btn { background-color: #ffc107; }
+        #export-btn:hover { background-color: #0056b3; }
+        #import-btn:hover { background-color: #e0a800; }
+        .delete-btn, .edit-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        .edit-btn { background-color: #17a2b8; }
+        .delete-btn:hover { background-color: #c82333; }
+        .edit-btn:hover { background-color: #138496; }
+        .edit-form-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .edit-form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 300px;
+        }
+        .edit-form .form-group {
+            margin-bottom: 10px;
+        }
+        .edit-form-btn-container {
+            text-align: right;
+            margin-top: 20px;
+        }
+        .edit-form-btn-container button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #save-edit-btn { background-color: #28a745; color: white; }
+        #cancel-edit-btn { background-color: #6c757d; color: white; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>تقسيم طلاب المرحلة الرابعة</h1>
+    <div class="table-container">
+        <img src="https://i.ibb.co/6y4nJ08/table.png" alt="جدول تقسيم المجموعات">
+    </div>
+    <div class="form-section">
+        <h2>إضافة اسمك إلى مجموعة</h2>
+        <form id="student-form">
+            <div class="form-group">
+                <label for="student-name">الاسم الثلاثي:</label>
+                <input type="text" id="student-name" required>
+            </div>
+            <div class="form-group">
+                <label for="group-select">Group:</label>
+                <select id="group-select" required>
+                    <option value="">-- اختر المجموعة --</option>
+                    <option value="A1">A1</option>
+                    <option value="A2">A2</option>
+                    <option value="B1">B1</option>
+                    <option value="B2">B2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="subgroup-select">Subgroup:</label>
+                <select id="subgroup-select" required>
+                    <option value="">-- اختر المجموعة الفرعية --</option>
+                    <option value="Subgroup 1">Subgroup 1</option>
+                    <option value="Subgroup 2">Subgroup 2</option>
+                    <option value="Subgroup 3">Subgroup 3</option>
+                    <option value="Subgroup 4">Subgroup 4</option>
+                    <option value="Subgroup 5">Subgroup 5</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-submit">إضافة الاسم</button>
+        </form>
+    </div>
+    <hr>
+    <div class="data-section">
+        <h2>قائمة الطلاب المسجلين</h2>
+        <div id="student-lists">
+        </div>
+        <div id="password-field">
+            <label for="admin-password">أدخل الرمز السري:</label>
+            <input type="password" id="admin-password">
+            <button onclick="checkPassword()">دخول</button>
+        </div>
+        <div id="admin-actions">
+            <button id="export-btn" class="admin-btn">تصدير البيانات (Excel)</button>
+            <input type="file" id="import-file" style="display:none;" accept=".xlsx, .xls">
+            <button id="import-btn" class="admin-btn" onclick="document.getElementById('import-file').click();">استيراد البيانات</button>
+            <div class="admin-note" style="color: red; margin-top: 10px;">
+                ملاحظة: عند استيراد ملف جديد، سيتم مسح جميع البيانات الحالية.
+            </div>
+        </div>
+    </div>
+</div>
+<div id="edit-form-container" class="edit-form-container">
+    <div class="edit-form">
+        <h2>تعديل بيانات الطالب</h2>
+        <form id="edit-student-form">
+            <input type="hidden" id="edit-original-name">
+            <div class="form-group">
+                <label for="edit-student-name">الاسم الثلاثي:</label>
+                <input type="text" id="edit-student-name" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-group-select">Group:</label>
+                <select id="edit-group-select" required>
+                    <option value="A1">A1</option>
+                    <option value="A2">A2</option>
+                    <option value="B1">B1</option>
+                    <option value="B2">B2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="edit-subgroup-select">Subgroup:</label>
+                <select id="edit-subgroup-select" required>
+                    <option value="Subgroup 1">Subgroup 1</option>
+                    <option value="Subgroup 2">Subgroup 2</option>
+                    <option value="Subgroup 3">Subgroup 3</option>
+                    <option value="Subgroup 4">Subgroup 4</option>
+                    <option value="Subgroup 5">Subgroup 5</option>
+                </select>
+            </div>
+            <div class="edit-form-btn-container">
+                <button type="submit" id="save-edit-btn">حفظ</button>
+                <button type="button" id="cancel-edit-btn">إلغاء</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script>
+    const studentForm = document.getElementById('student-form');
+    const studentListsDiv = document.getElementById('student-lists');
+    const passwordField = document.getElementById('password-field');
+    const adminActionsDiv = document.getElementById('admin-actions');
+    const exportBtn = document.getElementById('export-btn');
+    const importFile = document.getElementById('import-file');
+    const editFormContainer = document.getElementById('edit-form-container');
+    const editForm = document.getElementById('edit-student-form');
+    const editNameInput = document.getElementById('edit-student-name');
+    const editGroupSelect = document.getElementById('edit-group-select');
+    const editSubgroupSelect = document.getElementById('edit-subgroup-select');
+    const cancelEditBtn = document.getElementById('cancel-edit-btn');
+    const adminPasswordInput = document.getElementById('admin-password');
+    const GROUPS = ['A1', 'A2', 'B1', 'B2'];
+    const SUBGROUPS = ['Subgroup 1', 'Subgroup 2', 'Subgroup 3', 'Subgroup 4', 'Subgroup 5'];
+    const MAX_STUDENTS_PER_SUBGROUP = 10;
+    const ADMIN_PASSWORD = 'qfvlu10178';
+    let studentsData = {};
+    let editingStudent = null;
+    function initializeData() {
+        GROUPS.forEach(group => {
+            if (!studentsData[group]) {
+                studentsData[group] = {};
+            }
+            SUBGROUPS.forEach(subgroup => {
+                if (!studentsData[group][subgroup]) {
+                    studentsData[group][subgroup] = [];
+                }
+            });
+        });
+        const storedData = localStorage.getItem('studentsData');
+        if (storedData) {
+            studentsData = JSON.parse(storedData);
+        }
+    }
+    function saveData() {
+        localStorage.setItem('studentsData', JSON.stringify(studentsData));
+    }
+    function renderLists() {
+        studentListsDiv.innerHTML = '';
+        GROUPS.forEach(group => {
+            const groupDiv = document.createElement('div');
+            groupDiv.innerHTML = `<h3>${group}</h3>`;
+            SUBGROUPS.forEach(subgroup => {
+                const students = studentsData[group][subgroup] || [];
+                const count = students.length;
+                const subgroupDiv = document.createElement('div');
+                subgroupDiv.innerHTML = `<h4>${subgroup} (${count}/${MAX_STUDENTS_PER_SUBGROUP})</h4>`;
+                const list = document.createElement('ul');
+                students.forEach(student => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = student;
+                    if (adminActionsDiv.style.display === 'block') {
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.textContent = 'حذف';
+                        deleteBtn.className = 'delete-btn';
+                        deleteBtn.onclick = () => {
+                            if (confirm(`هل أنت متأكد من حذف ${student}؟`)) {
+                                deleteStudent(student, group, subgroup);
+                            }
+                        };
+                        const editBtn = document.createElement('button');
+                        editBtn.textContent = 'تعديل';
+                        editBtn.className = 'edit-btn';
+                        editBtn.onclick = () => {
+                            openEditForm(student, group, subgroup);
+                        };
+                        listItem.appendChild(editBtn);
+                        listItem.appendChild(deleteBtn);
+                    }
+                    list.appendChild(listItem);
+                });
+                subgroupDiv.appendChild(list);
+                groupDiv.appendChild(subgroupDiv);
+            });
+            studentListsDiv.appendChild(groupDiv);
+        });
+    }
+    studentForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('student-name').value.trim();
+        const group = document.getElementById('group-select').value;
+        const subgroup = document.getElementById('subgroup-select').value;
+        if (studentsData[group][subgroup].length >= MAX_STUDENTS_PER_SUBGROUP) {
+            alert('عذراً، هذه المجموعة الفرعية ممتلئة. يرجى اختيار مجموعة أخرى.');
+            return;
+        }
+        let nameExists = false;
+        GROUPS.forEach(g => {
+            SUBGROUPS.forEach(s => {
+                if (studentsData[g][s].includes(name)) {
+                    nameExists = true;
+                }
+            });
+        });
+        if (nameExists) {
+            alert('هذا الاسم مسجل بالفعل في إحدى المجموعات.');
+            return;
+        }
+        studentsData[group][subgroup].push(name);
+        saveData();
+        renderLists();
+        studentForm.reset();
+    });
+    function checkPassword() {
+        const password = adminPasswordInput.value;
+        if (password === ADMIN_PASSWORD) {
+            passwordField.style.display = 'none';
+            adminActionsDiv.style.display = 'block';
+            alert('تم الدخول كمدير بنجاح!');
+            renderLists();
+        } else {
+            alert('الرمز السري غير صحيح.');
+            adminPasswordInput.value = '';
+        }
+    }
+    function deleteStudent(name, group, subgroup) {
+        const index = studentsData[group][subgroup].indexOf(name);
+        if (index > -1) {
+            studentsData[group][subgroup].splice(index, 1);
+            saveData();
+            renderLists();
+        }
+    }
+    function openEditForm(name, group, subgroup) {
+        editingStudent = { name, group, subgroup };
+        editNameInput.value = name;
+        editGroupSelect.value = group;
+        editSubgroupSelect.value = subgroup;
+        editFormContainer.style.display = 'flex';
+    }
+    editForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newName = editNameInput.value.trim();
+        const newGroup = editGroupSelect.value;
+        const newSubgroup = editSubgroupSelect.value;
+        if (!editingStudent) return;
+        if (newName !== editingStudent.name) {
+            let nameExists = false;
+            GROUPS.forEach(g => {
+                SUBGROUPS.forEach(s => {
+                    if (g !== editingStudent.group || s !== editingStudent.subgroup) {
+                        if (studentsData[g][s].includes(newName)) {
+                            nameExists = true;
+                        }
+                    }
+                });
+            });
+            if (nameExists) {
+                alert('هذا الاسم مسجل بالفعل في مجموعة أخرى.');
+                return;
+            }
+        }
+        if (newGroup === editingStudent.group && newSubgroup === editingStudent.subgroup) {
+        } else if (studentsData[newGroup][newSubgroup].length >= MAX_STUDENTS_PER_SUBGROUP) {
+            alert('عذراً، هذه المجموعة الفرعية ممتلئة.');
+            return;
+        }
+        deleteStudent(editingStudent.name, editingStudent.group, editingStudent.subgroup);
+        studentsData[newGroup][newSubgroup].push(newName);
+        saveData();
+        renderLists();
+        closeEditForm();
+    });
+    cancelEditBtn.addEventListener('click', () => {
+        closeEditForm();
+    });
+    function closeEditForm() {
+        editingStudent = null;
+        editFormContainer.style.display = 'none';
+    }
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('#student-lists') && adminActionsDiv.style.display !== 'block') {
+            passwordField.style.display = 'flex';
+        }
+    });
+    exportBtn.addEventListener('click', () => {
+        const data = [];
+        data.push(['الاسم', 'المجموعة', 'المجموعة الفرعية']);
+        GROUPS.forEach(group => {
+            SUBGROUPS.forEach(subgroup => {
+                const students = studentsData[group][subgroup] || [];
+                students.forEach(student => {
+                    data.push([student, group, subgroup]);
+                });
+            });
+        });
+        const ws = XLSX.utils.aoa_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "الطلاب");
+        XLSX.writeFile(wb, "طلاب_المرحلة_الرابعة.xlsx");
+    });
+    importFile.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = e.target.result;
+                const workbook = XLSX.read(data, { type: 'binary' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                studentsData = {};
+                initializeData();
+                json.slice(1).forEach(row => {
+                    const name = row[0];
+                    const group = row[1];
+                    const subgroup = row[2];
+                    if (name && group && subgroup && studentsData[group] && studentsData[group][subgroup]) {
+                        studentsData[group][subgroup].push(name);
+                    }
+                });
+                saveData();
+                renderLists();
+                alert('تم استيراد البيانات بنجاح!');
+            };
+            reader.readAsBinaryString(file);
+        }
+    });
+    initializeData();
+    renderLists();
+</script>
+</body>
+</html>
